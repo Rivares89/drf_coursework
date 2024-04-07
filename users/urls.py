@@ -12,8 +12,8 @@ from rest_framework_simplejwt.views import (
 app_name = UsersConfig.name
 
 urlpatterns = [
-    path('login/', UserCreateAPIView.as_view(),
-         name='login_user'),
+    path('register/', UserCreateAPIView.as_view(),
+         name='register_user'),
     path('update/<int:pk>/', UserUpdateAPIView.as_view(),
          name='update_user'),
     path('detail/<int:pk>/', UserRetrieveAPIView.as_view(),
