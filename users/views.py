@@ -24,7 +24,7 @@ class UserCreateAPIView(generics.CreateAPIView):
     def perform_create(self, request, *args, **kwargs):
         data = request.data
         password = data.get('password')
-        user = User.object.get(email=data.get('email'))
+        user = User.objects.get(email=data.get('email'))
         user.set_password(password)
         user.save()
 

@@ -5,7 +5,6 @@ from celery import shared_task
 from django.conf import settings
 
 from habits.models import Habit
-from habits.services import send_message
 
 
 @shared_task
@@ -26,7 +25,8 @@ def send_reminder_about_habit():
         if habit.date == date_now or not habit.date:
             if habit.time >= time_now:
                 chat_id = habit.owner.telegram_id
-                text = f"Вам нужно {habit.action} в {habit.time} в {habit.place}"
+                text = (f"Вам нужно {habit.action} "
+                        f"в {habit.time} в {habit.place}")
                 requests.post(
                     url=f"{URL}{TOKEN}/sendMessage",
                     data={
