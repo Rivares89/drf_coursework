@@ -23,7 +23,7 @@ class HabitTestCase(APITestCase):
             place='test_place',
             action='test_action',
             owner=self.user
-    )
+        )
 
     def test_create_habit(self):
         """Тестирование создания привычек"""
@@ -42,15 +42,6 @@ class HabitTestCase(APITestCase):
     def test_list_habit(self):
         """Тестирование вывода списка привычек"""
 
-        data = {
-            'result': [
-                {
-                    'place': 'test_place',
-                    'action': 'test_action',
-                    'owner': self.user.pk
-                }
-            ]
-        }
         response = self.client.get('/habits/')
 
         self.assertEquals(response.status_code, status.HTTP_200_OK)
@@ -87,7 +78,8 @@ class HabitTestCase(APITestCase):
             'place': 'place_update',
             'action': 'action_update'
         }
-        response = self.client.patch(f'/habits/update/{self.habit.id}/', data=change_data)
+        response = self.client.patch(f'/habits/update/{self.habit.id}/',
+                                     data=change_data)
         self.maxDiff = None
 
         self.assertEquals(response.status_code, status.HTTP_200_OK)
@@ -110,7 +102,8 @@ class HabitTestCase(APITestCase):
         )
 
     def test_duration_habit(self):
-        """Тестирование создания привычки со временем исполнения более 2 минут"""
+        """Тестирование создания привычки
+        со временем исполнения более 2 минут"""
 
         data = {
             'place': 'test_place',
@@ -123,7 +116,8 @@ class HabitTestCase(APITestCase):
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_periodicity_habit(self):
-        """Тестирование создания привычки с периодичностью менее одного раза в неделю"""
+        """Тестирование создания привычки
+        с периодичностью менее одного раза в неделю"""
 
         data = {
             'place': 'test_place',
@@ -136,7 +130,7 @@ class HabitTestCase(APITestCase):
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_reward_and_pleasant_habit(self):
-        """Тестирование создания привычки с наградой и приятной привычкой одновременно"""
+        """Тестирование создания привычки с наградой и приятной привычкой"""
 
         data = {
             'place': 'test_place',
