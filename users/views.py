@@ -1,5 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 
 from users.models import User
 from users.serializers import UserSerializer
@@ -8,25 +9,21 @@ from users.serializers import UserSerializer
 class UserCreateAPIView(generics.CreateAPIView):
     """Представление для создания пользователей"""
     serializer_class = UserSerializer
-    queryset = User.objects.all()
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
+        """Переопределение метода для сохранения хешированного пароля в бд"""
         serializer = UserSerializer(data=request.data)
-        data = {}
-        if serializer.is_valid():
-            serializer.save()
-            data['response'] = True
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            data = serializer.errors
-            return Response(data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
 
-    def perform_create(self, request, *args, **kwargs):
-        data = request.data
-        password = data.get('password')
-        user = User.objects.get(email=data.get('email'))
+        password = serializer.data["password"]
+        user = User.objects.get(pk=serializer.data["id"])
         user.set_password(password)
+        user.is_active = True
         user.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
